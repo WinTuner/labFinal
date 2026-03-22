@@ -1,0 +1,15 @@
+=== LIBRARY DATA BACKUP ===
+Type,Data
+
+=== MEMBERS ===
+MEMBER,M001,Somsak,Basic Member
+MEMBER,M002,Suda,Student Member
+MEMBER,M003,Somchai,Premium Member
+MEMBER,M004,Niran,Family Member
+
+=== ITEMS ===
+BOOK,Java Programming,John Smith,978-0134685991,450.00,A1-04
+BOOK,Clean Code,Robert Martin,978-0132350884,520.00,B2-15
+BOOK,Design Patterns,Gang of Four,978-0201633612,680.00,A3-22
+EBOOK,Effective Java,Joshua Bloch,978-0134685991,https://library.ebooks.com/effective-java.pdf,5.20
+EBOOK,Python Crash Course,Eric Matthes,978-1593279288,https://library.ebooks.com/python-crash.pdf,8.70
