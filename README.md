@@ -5,74 +5,72 @@
 
 ## 🎯 Overview
 
-โปรเจคนี้เป็นระบบจัดการห้องสมุดที่พัฒนาด้วยภาษา Java โดยนำหลักการ Object-Oriented Programming (OOP) มาใช้ในการออกแบบโครงสร้างโปรแกรมให้เป็นระบบ เข้าใจง่าย และสามารถต่อยอดได้ในอนาคต ระบบรองรับการจัดการสมาชิก รายการหนังสือ และกระบวนการยืม-คืน โดยมีการจำลองการใช้งานจริงผ่านเมนูแบบ command-line
+โปรเจคนี้เป็นระบบจัดการห้องสมุดที่พัฒนาด้วยภาษา Java โดยใช้หลัก Object-Oriented Programming (OOP) ในการออกแบบโครงสร้างโปรแกรมให้มีความเป็นระบบ เข้าใจง่าย และสามารถต่อยอดได้ในอนาคต รองรับการจัดการสมาชิก รายการหนังสือ และระบบยืม-คืน ผ่านเมนูแบบ command-line
 
 ---
 
-## ✨ Features หลักของระบบ
+## ✨ Features หลัก
 
-### 👤 การจัดการสมาชิก (Member Management)
+### 👤 Member Management
 
-สามารถเพิ่มสมาชิกใหม่ แสดงข้อมูลสมาชิก และค้นหาสมาชิกด้วยรหัสได้ โดยสมาชิกแต่ละคนสามารถเลือกประเภทสมาชิก (Membership) ซึ่งมีผลต่อจำนวนการยืม ระยะเวลาการยืม และส่วนลดค่าปรับ
-
----
-
-### 📖 การจัดการทรัพยากร (Library Items)
-
-รองรับสื่ออย่างน้อย 2 ประเภท ได้แก่ หนังสือแบบเล่ม (Physical Book) และหนังสือดิจิทัล (E-Book) โดยสามารถเพิ่ม ค้นหา แสดงรายการ และลบข้อมูลได้ พร้อมแสดงสถานะว่ารายการนั้นว่างหรือถูกยืมอยู่
+* สมัครสมาชิก
+* ดูข้อมูล / ค้นหาสมาชิก
+* เปลี่ยนประเภทสมาชิก
 
 ---
 
-### 🔁 ระบบยืม-คืน (Borrowing System)
+### 📖 Library Items
 
-ผู้ใช้สามารถยืมและคืนรายการได้จริง โดยระบบจะตรวจสอบเงื่อนไขสำคัญ เช่น
-
-* รายการว่างหรือไม่
-* จำนวนการยืมของสมาชิก
-* ระยะเวลาการยืมตามประเภทสมาชิก
-
-นอกจากนี้ยังมีการคำนวณค่าปรับในกรณีคืนล่าช้า
+* เพิ่มหนังสือ (Physical / E-Book)
+* แสดง / ค้นหา / ลบรายการ
+* แสดงสถานะว่าง/ถูกยืม
 
 ---
 
-### 📊 รายงาน (Reports)
+### 🔁 Borrowing System
 
-ระบบสามารถแสดงรายงานพื้นฐาน ได้แก่
-
-* รายการที่ค้างส่ง (Overdue)
-* รายการที่ถูกยืมบ่อย
-* สมาชิกที่มีการยืมมากที่สุด
-* สถานะของรายการทั้งหมด
+* ยืม-คืนหนังสือ
+* ตรวจสอบ limit ของสมาชิก
+* คำนวณ due date อัตโนมัติ
+* คิดค่าปรับเมื่อคืนช้า
 
 ---
 
-### 💾 การจัดเก็บข้อมูล (Data Persistence)
+### 📊 Reports
 
-ข้อมูลจะถูกจัดเก็บในรูปแบบไฟล์ CSV โดยระบบสามารถโหลดข้อมูลเดิมเมื่อเริ่มต้นโปรแกรม และบันทึกข้อมูลอัตโนมัติเมื่อออกจากระบบ
-
----
-
-## 🧠 การประยุกต์ใช้ OOP
-
-โปรเจคนี้มีการใช้แนวคิด OOP อย่างครบถ้วน ได้แก่
-
-* **Inheritance**: `PhysicalBook` และ `EBook` สืบทอดจาก `LibraryItem`
-* **Polymorphism**: ใช้ `LibraryItem` เป็นตัวแทนของหลายประเภทสื่อ
-* **Interface**: เช่น `MembershipStrategy`, `Taxable`, `DigitalContent`
-* **Overriding**: override เมธอด เช่น `displayDetails()`
-* **Overloading**: เช่น `calculateLateFee()` ที่รองรับหลายรูปแบบ
-* **Encapsulation**: ใช้ private fields และ getter/setter เพื่อควบคุมข้อมูล
-
-นอกจากนี้ยังมีการใช้ Design Patterns เช่น
-
-* **Singleton Pattern** สำหรับ `LibrarySystem`
-* **Strategy Pattern** สำหรับระบบ Membership
+* รายการค้างส่ง (Overdue)
+* หนังสือที่ถูกยืมบ่อย
+* สมาชิกที่ยืมมากสุด
+* สถานะ inventory
 
 ---
 
-## 🏗️ โครงสร้างระบบ (Class Structure)
+### 💾 Data Persistence
 
-```id="3p2o8f"
+* บันทึกข้อมูลเป็น CSV
+* โหลดข้อมูลอัตโนมัติ
+* เซฟตอนออกจากโปรแกรม
+
+---
+
+## 🧠 OOP Concepts
+
+* Inheritance → `PhysicalBook`, `EBook`
+* Polymorphism → `LibraryItem`
+* Interface → `MembershipStrategy`, `Taxable`
+* Overriding / Overloading
+* Encapsulation
+
+**Design Patterns:**
+
+* Singleton → `LibrarySystem`
+* Strategy → Membership
+
+---
+
+## 🏗️ Class Structure
+
+```
 LibraryItem (abstract)
  ├── PhysicalBook
  └── EBook
@@ -80,7 +78,7 @@ LibraryItem (abstract)
 Member
  └── uses MembershipStrategy
 
-MembershipStrategy (interface)
+MembershipStrategy
  ├── Basic
  ├── Student
  ├── Premium
@@ -91,37 +89,168 @@ LibrarySystem (Singleton)
 
 ---
 
-## 📋 ประเภทสมาชิก (Membership)
+# 🚀 Quick Start Guide
 
-แต่ละประเภทสมาชิกมีเงื่อนไขแตกต่างกัน เช่น จำนวนรายการที่สามารถยืมได้ ระยะเวลาการยืม และส่วนลดค่าปรับ
-ตัวอย่าง: Premium สามารถยืมได้ไม่จำกัดและไม่มีค่าปรับ
+## 🔧 Installation
 
----
+### Requirements
 
-## 📖 ตัวอย่างการใช้งาน (Use Cases)
-
-* สมัครสมาชิกใหม่และเลือกประเภทสมาชิก
-* เพิ่มหนังสือเข้าสู่ระบบ
-* ยืมรายการโดยระบบตรวจสอบเงื่อนไขอัตโนมัติ
-* คืนรายการพร้อมคำนวณค่าปรับ
-* ดูรายงานสรุปของระบบ
+* Java 8+
+* Terminal / Command Prompt
 
 ---
 
-## ⚠️ การตรวจสอบข้อมูล (Validation)
+## ▶️ Run Project
 
-ระบบมีการตรวจสอบข้อมูลเพื่อป้องกันข้อผิดพลาด เช่น
-
-* ตรวจสอบ ID ซ้ำ
-* ตรวจสอบข้อมูลว่าง
-* ตรวจสอบจำนวนการยืมเกิน limit
-* ตรวจสอบสถานะของรายการก่อนยืม
-
----
-
-## 🎯 สรุป
-
-ระบบนี้สามารถทำงานได้จริงตามเงื่อนไขของโจทย์ มีการใช้ OOP อย่างครบถ้วน และมีโครงสร้างที่ชัดเจน ทำให้สามารถรองรับการใช้งานในสถานการณ์จำลองได้อย่างเหมาะสม อีกทั้งยังสามารถต่อยอดเพิ่มเติมฟีเจอร์ในอนาคตได้ เช่น การพัฒนา GUI หรือเพิ่มระบบจองหนังสือ
+```bash
+cd /home/natto/Documents/OOP-Lab-2026
+javac -d com src/com/library/labFinal/*.java
+java -cp com com.library.labFinal.LibraryManagementApp
+```
 
 ---
 
+## 🖥️ Main Menu
+
+```
+1. Manage Members
+2. Manage Library Items
+3. Borrow Items
+4. Return Items
+5. View Reports
+6. View Statistics
+7. Demo Mode
+8. Exit & Save
+```
+
+---
+
+# 🎮 Demo (5 นาที)
+
+### Step 1: Demo Mode
+
+```
+7
+```
+
+→ แสดง OOP + design patterns
+
+### Step 2: Statistics
+
+```
+6
+```
+
+### Step 3: Members
+
+```
+1 → 2
+```
+
+### Step 4: Items
+
+```
+2 → 3
+```
+
+### Step 5: Exit
+
+```
+8
+```
+
+---
+
+# 📖 Use Cases
+
+* สมัครสมาชิก
+* เพิ่มหนังสือ
+* ยืมหนังสือ
+* คืนหนังสือ
+* ดูรายงาน
+
+---
+
+# 📊 Sample Data
+
+### Members
+
+* Somsak (Basic)
+* Suda (Student)
+* Somchai (Premium)
+* Niran (Family)
+
+### Items
+
+* Java Programming
+* Clean Code
+* Design Patterns
+* Effective Java
+* Python Crash Course
+
+---
+
+# ⚠️ Validation
+
+* ป้องกัน ID ซ้ำ
+* ตรวจ input ว่าง
+* เช็ค limit การยืม
+* เช็คสถานะหนังสือ
+
+---
+
+# 💾 Data
+
+* Save: `library_data.csv`
+* Load: ตอนเปิดโปรแกรม
+
+---
+
+# 🧩 File Structure
+
+```
+src/
+com/
+library_data.csv
+README.md
+```
+
+---
+
+# 🛠️ Troubleshooting
+
+**Java not found**
+
+```bash
+java -version
+```
+
+**Compile ไม่ผ่าน**
+
+```bash
+pwd
+ls src/com/library/labFinal/
+```
+
+**Run ไม่ได้**
+
+```bash
+ls com/com/library/labFinal/*.class
+```
+
+---
+
+# 💡 Tips
+
+* เริ่มจาก Demo Mode
+* ดู Statistics ก่อน
+* ลองสมัคร member ใหม่
+* ใช้ search ช่วย
+
+---
+
+# 🎯 สรุป
+
+โปรเจคนี้สามารถทำงานได้จริง มีการใช้ OOP ครบตามโจทย์ และมีโครงสร้างที่ชัดเจน เหมาะสำหรับการนำเสนอและต่อยอดในอนาคต เช่น GUI หรือระบบจองหนังสือ
+
+---
