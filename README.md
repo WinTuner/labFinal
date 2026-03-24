@@ -1,17 +1,13 @@
+City Central Library Management System
+Overview
+
+โปรเจคนี้เป็นระบบจัดการห้องสมุดที่พัฒนาด้วยภาษา Java โดยใช้หลัก OOP ในการออกแบบโครงสร้างโปรแกรมให้มีความเป็นระบบ เข้าใจง่าย และสามารถต่อยอดได้ในอนาคต รองรับการจัดการสมาชิก รายการหนังสือ และระบบยืม-คืน ผ่านเมนูแบบ command-line
 
 ---
 
-# 📚 City Central Library Management System
+## Features หลัก
 
-## 🎯 Overview
-
-โปรเจคนี้เป็นระบบจัดการห้องสมุดที่พัฒนาด้วยภาษา Java โดยใช้หลัก Object-Oriented Programming (OOP) ในการออกแบบโครงสร้างโปรแกรมให้มีความเป็นระบบ เข้าใจง่าย และสามารถต่อยอดได้ในอนาคต รองรับการจัดการสมาชิก รายการหนังสือ และระบบยืม-คืน ผ่านเมนูแบบ command-line
-
----
-
-## ✨ Features หลัก
-
-### 👤 Member Management
+##  Member Management
 
 * สมัครสมาชิก
 * ดูข้อมูล / ค้นหาสมาชิก
@@ -19,7 +15,7 @@
 
 ---
 
-### 📖 Library Items
+## Library Items
 
 * เพิ่มหนังสือ (Physical / E-Book)
 * แสดง / ค้นหา / ลบรายการ
@@ -27,7 +23,7 @@
 
 ---
 
-### 🔁 Borrowing System
+## Borrowing System
 
 * ยืม-คืนหนังสือ
 * ตรวจสอบ limit ของสมาชิก
@@ -36,7 +32,7 @@
 
 ---
 
-### 📊 Reports
+## Reports
 
 * รายการค้างส่ง (Overdue)
 * หนังสือที่ถูกยืมบ่อย
@@ -45,7 +41,7 @@
 
 ---
 
-### 💾 Data Persistence
+## Data Persistence
 
 * บันทึกข้อมูลเป็น CSV
 * โหลดข้อมูลอัตโนมัติ
@@ -53,7 +49,7 @@
 
 ---
 
-## 🧠 OOP Concepts
+##  OOP Concepts
 
 * Inheritance → `PhysicalBook`, `EBook`
 * Polymorphism → `LibraryItem`
@@ -68,7 +64,7 @@
 
 ---
 
-## 🏗️ Class Structure
+##  Class Structure
 
 ```
 LibraryItem (abstract)
@@ -89,9 +85,9 @@ LibrarySystem (Singleton)
 
 ---
 
-# 🚀 Quick Start Guide
+#  Quick Start Guide
 
-## 🔧 Installation
+## Installation
 
 ### Requirements
 
@@ -100,7 +96,7 @@ LibrarySystem (Singleton)
 
 ---
 
-## ▶️ Run Project
+##  Run Project
 
 ```bash
 cd /home/natto/Documents/OOP-Lab-2026
@@ -110,7 +106,7 @@ java -cp com com.library.labFinal.LibraryManagementApp
 
 ---
 
-## 🖥️ Main Menu
+##  Main Menu
 
 ```
 1. Manage Members
@@ -161,7 +157,7 @@ java -cp com com.library.labFinal.LibraryManagementApp
 
 ---
 
-# 📖 Use Cases
+# Use Cases
 
 * สมัครสมาชิก
 * เพิ่มหนังสือ
@@ -171,7 +167,7 @@ java -cp com com.library.labFinal.LibraryManagementApp
 
 ---
 
-# 📊 Sample Data
+# Sample Data
 
 ### Members
 
@@ -190,7 +186,7 @@ java -cp com com.library.labFinal.LibraryManagementApp
 
 ---
 
-# ⚠️ Validation
+# Validation
 
 * ป้องกัน ID ซ้ำ
 * ตรวจ input ว่าง
@@ -199,14 +195,14 @@ java -cp com com.library.labFinal.LibraryManagementApp
 
 ---
 
-# 💾 Data
+# Data
 
 * Save: `library_data.csv`
 * Load: ตอนเปิดโปรแกรม
 
 ---
 
-# 🧩 File Structure
+# File Structure
 
 ```
 src/
@@ -217,7 +213,7 @@ README.md
 
 ---
 
-# 🛠️ Troubleshooting
+# Troubleshooting
 
 **Java not found**
 
@@ -240,7 +236,7 @@ ls com/com/library/labFinal/*.class
 
 ---
 
-# 💡 Tips
+# Tips
 
 * เริ่มจาก Demo Mode
 * ดู Statistics ก่อน
@@ -249,8 +245,6 @@ ls com/com/library/labFinal/*.class
 
 ---
 
-# 🎯 สรุป
+# สรุป
 
-โปรเจคนี้สามารถทำงานได้จริง มีการใช้ OOP ครบตามโจทย์ และมีโครงสร้างที่ชัดเจน เหมาะสำหรับการนำเสนอและต่อยอดในอนาคต เช่น GUI หรือระบบจองหนังสือ
-
----
+โปรเจคนี้สามารถทำงานได้จริง มีการใช้ OOP และมีโครงสร้างที่ชัดเจน เหมาะสำหรับการนำเสนอและต่อยอดในอนาคต เช่น GUI หรือระบบจองหนังสือ
