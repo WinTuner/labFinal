@@ -1,444 +1,315 @@
-# 🏛️ Library Management System - Design Document
+# ระบบจัดการห้องสมุด - เอกสารการออกแบบ
 
-## Project Overview
-A comprehensive Java-based Library Management System demonstrating OOP principles and design patterns for educational purposes.
+## ภาพรวมโปรเจค
+ระบบจัดการห้องสมุดที่พัฒนาด้วย Java เพื่อสาธิตหลักการ OOP และ Design Patterns สำหรับการเรียนการสอน
 
-**Project Name**: City Central Library Management System
-**Version**: 1.0.0
-**Date**: March 2026
-**Author**: OOP Lab Final Project
+**ชื่อโปรเจค**: ระบบจัดการห้องสมุดกลางเมือง  
+**เวอร์ชัน**: 1.0.0  
+**วันที่**: มีนาคม 2026  
+**ผู้จัดทำ**: โปรเจคปลายภาค OOP Lab
 
 ---
 
-## 1. System Architecture
+## 1. สถาปัตยกรรมระบบ
 
-### 1.1 Class Diagram
+### 1.1 Class Diagram (แผนผังคลาส)
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
 │                     LibrarySystem (Singleton)                   │
+│                     ระบบห้องสมุด (แบบซิงเกิลตัน)                │
+├─────────────────────────────────────────────────────────────────┤
 │  - instance: LibrarySystem                                      │
-│  - allItems: List<LibraryItem>                                 │
-│  - allMembers: List<Member>                                    │
-│  + getInstance(): LibrarySystem                                │
-│  + addItem(item): void                                         │
-│  + addMember(member): void                                     │
-│  + findItemByTitle(title): LibraryItem                         │
-│  + findMemberById(id): Member                                  │
-│  + reportOverdueItems(): void                                  │
-│  + reportMostBorrowedItems(): void                             │
-│  + saveToCSV(filename): void                                   │
-│  + loadFromCSV(filename): void                                 │
+│  - allItems: List<LibraryItem>          (รายการหนังสือทั้งหมด) │
+│  - allMembers: List<Member>              (รายชื่อสมาชิกทั้งหมด) │
+├─────────────────────────────────────────────────────────────────┤
+│  + getInstance(): LibrarySystem          (ดึงตัวอินสแตนซ์)      │
+│  + addItem(item): void                   (เพิ่มหนังสือ)         │
+│  + addMember(member): void               (เพิ่มสมาชิก)          │
+│  + findItemByTitle(title): LibraryItem   (ค้นหาหนังสือจากชื่อ)  │
+│  + findMemberById(id): Member            (ค้นหาสมาชิกจาก ID)    │
+│  + reportOverdueItems(): void            (รายงานหนังสือเกินกำหนด)│
+│  + reportMostBorrowedItems(): void       (รายงานหนังสือยอดนิยม) │
+│  + saveToCSV(filename): void             (บันทึกข้อมูลเป็น CSV) │
+│  + loadFromCSV(filename): void           (โหลดข้อมูลจาก CSV)    │
 └─────────────────────────────────────────────────────────────────┘
                               △
-                              │ manages
+                              │ จัดการ (manages)
                     ┌─────────┴──────────┐
                     │                    │
          ┌──────────▼────────────┐   ┌──▼─────────────────┐
          │  LibraryItem (ABC)    │   │  Member            │
-         │ ─────────────────     │   │ ──────────────     │
+         │  รายการห้องสมุด       │   │  สมาชิก            │
+         │  (คลาสนามธรรม)        │   │                    │
+         ├───────────────────────┤   ├────────────────────┤
          │ - title               │   │ - memberId         │
          │ - author              │   │ - name             │
-         │ - isbn                │   │ - borrowedItems    │
-         │ - isAvailable         │   │ - strategy         │
-         │ - borrower            │   │ + borrowItem()     │
-         │ - dueDate             │   │ + returnItem()     │
-         │ + checkOut(member)    │   │ + canBorrow()      │
-         │ + returnItem()        │   │ + setStrategy()    │
-         │ + displayDetails()    │   └────────────────────┘
-         │ + calculateLateFee()  │            △
-         └──────────┬────────────┘            │
-                    │ extends               │
-        ┌───────────┴───────────┐           │ uses
-        │                       │           │
-┌─────▼──────────────┐  ┌──────▼────────────────────┐
-│  PhysicalBook      │  │  <<interface>>           │
-│ ───────────────    │  │  MembershipStrategy      │
-│ - price            │  │ ──────────────────       │
-│ - shelfLocation    │  │ + getBorrowLimit()       │
-│ implements: Taxable│  │ + getLoanPeriodDays()    │
-└────────────────────┘  │ + applyLateFeeDiscount() │
-                        │ + getMembershipType()    │
-┌─────▼──────────────┐  └──────┬───────────────────┘
-│  EBook             │         │
-│ ───────────────    │   ┌─────┴────────────────────────┐
-│ - downloadUrl      │   │                              │
-│ - fileSize         │   ├──────────────────────────────┤
-│ implements:        │   │ Concrete Strategies:         │
-│   Taxable          │   ├──────────────────────────────┤
-│   DigitalContent   │   │ • BasicMembershipStrategy    │
-└────────────────────┘   │ • StudentMembershipStrategy  │
-                         │ • PremiumMembershipStrategy  │
-         ┌───────────────┤ • FamilyMembershipStrategy   │
-         │               │                              │
-    ┌────▼─────────┐     └──────────────────────────────┘
-    │ <<interface>>│
-    │   Taxable    │     ┌──────────────────────┐
-    │ ─────────    │     │ <<interface>>        │
-    │+ calculateTax()     │ DigitalContent      │
-    └──────────────┘     │ ──────────────────  │
-                         │ + streamOnline()    │
-                         │ + download()        │
-                         └──────────────────────┘
+         │ - itemId              │   │ - membershipType   │
+         │ - isAvailable         │   │ - borrowedItems    │
+         │ - borrower            │   │ - borrowStrategy   │
+         │ - dueDate             │   ├────────────────────┤
+         ├───────────────────────┤   │ + borrowItem()     │
+         │ + borrow()            │   │ + returnItem()     │
+         │ + returnItem()        │   │ + canBorrow()      │
+         │ + getDetails()        │   │ + getBorrowLimit() │
+         └───────────────────────┘   └────────────────────┘
+                  △                            │
+                  │                            │ uses
+          ┌───────┴────────┐                  │
+          │                │                  ▼
+  ┌───────▼──────┐  ┌──────▼────────┐  ┌──────────────────┐
+  │ PhysicalBook │  │    EBook      │  │ BorrowStrategy   │
+  │ หนังสือกระดาษ│  │  หนังสืออิเล็ก│  │ กลยุทธ์การยืม   │
+  ├──────────────┤  ├───────────────┤  │  (Interface)     │
+  │- shelfLocation│  │- downloadURL  │  ├──────────────────┤
+  │- weight       │  │- fileSize     │  │+ canBorrow()     │
+  ├──────────────┤  ├───────────────┤  │+ getBorrowLimit()│
+  │+ getDetails() │  │+ getDetails() │  │+ getBorrowDays() │
+  └──────────────┘  └───────────────┘  │+ getLateFee()    │
+                                        └──────────────────┘
+                                               △
+                    ┌──────────────────────────┼──────────────────────────┐
+                    │                          │                          │
+         ┌──────────▼──────────┐   ┌──────────▼──────────┐   ┌──────────▼──────────┐
+         │ BasicBorrowStrategy │   │StudentBorrowStrategy│   │PremiumBorrowStrategy│
+         │ กลยุทธ์แบบพื้นฐาน   │   │ กลยุทธ์แบบนักเรียน  │   │ กลยุทธ์แบบพรีเมียม  │
+         ├─────────────────────┤   ├─────────────────────┤   ├─────────────────────┤
+         │ จำกัด: 1 เล่ม       │   │ จำกัด: 5 เล่ม       │   │ ไม่จำกัด            │
+         │ ระยะเวลา: 14 วัน   │   │ ระยะเวลา: 21 วัน   │   │ ระยะเวลา: 30 วัน   │
+         │ ส่วนลด: 0%         │   │ ส่วนลด: 20%        │   │ ส่วนลด: 100%       │
+         │ ค่าปรับ: 10฿/วัน   │   │ ค่าปรับ: 8฿/วัน    │   │ ค่าปรับ: 0฿/วัน    │
+         └─────────────────────┘   └─────────────────────┘   └─────────────────────┘
 ```
 
 ---
 
-## 2. Design Patterns
+## 2. คำอธิบายคลาสหลัก
 
-### 2.1 Singleton Pattern
+### 2.1 LibrarySystem (Singleton Pattern)
+**หน้าที่**: คลาสหลักที่จัดการระบบทั้งหมด ใช้ Singleton Pattern เพื่อให้มีอินสแตนซ์เดียวในระบบ
 
-**Purpose**: Ensure only one LibrarySystem instance exists
+**คุณสมบัติ**:
+- `instance`: อินสแตนซ์เดียวของระบบ
+- `allItems`: เก็บรายการหนังสือทั้งหมด
+- `allMembers`: เก็บรายชื่อสมาชิกทั้งหมด
 
-**Implementation**: 
-```java
-public class LibrarySystem {
-    private static LibrarySystem instance;
-    
-    private LibrarySystem() { } // Private constructor
-    
-    public static synchronized LibrarySystem getInstance() {
-        if (instance == null) {
-            instance = new LibrarySystem();
-        }
-        return instance;
-    }
-}
-```
-
-**Benefits**:
-- Centralized management of library data
-- Thread-safe access
-- Global point of access
+**เมธอดสำคัญ**:
+- `getInstance()`: คืนค่าอินสแตนซ์เดียวของระบบ
+- `addItem()`, `addMember()`: เพิ่มข้อมูล
+- `findItemByTitle()`, `findMemberById()`: ค้นหาข้อมูล
+- `reportOverdueItems()`: สร้างรายงานหนังสือเกินกำหนด
+- `saveToCSV()`, `loadFromCSV()`: บันทึกและโหลดข้อมูล
 
 ---
 
-### 2.2 Strategy Pattern
+### 2.2 LibraryItem (Abstract Class)
+**หน้าที่**: คลาสนามธรรมสำหรับรายการในห้องสมุด
 
-**Purpose**: Encapsulate different membership behaviors
+**คุณสมบัติ**:
+- `title`: ชื่อหนังสือ
+- `author`: ชื่อผู้แต่ง
+- `itemId`: รหัสหนังสือ
+- `isAvailable`: สถานะว่าง/ไม่ว่าง
+- `borrower`: ผู้ยืมปัจจุบัน
+- `dueDate`: วันครบกำหนดคืน
 
-**Implementation**:
-```java
-public interface MembershipStrategy {
-    int getBorrowLimit();
-    int getLoanPeriodDays();
-    double applyLateFeeDiscount(double baseFee);
-    String getMembershipType();
-}
-
-// Concrete Strategies
-public class BasicMembershipStrategy implements MembershipStrategy { ... }
-public class StudentMembershipStrategy implements MembershipStrategy { ... }
-public class PremiumMembershipStrategy implements MembershipStrategy { ... }
-public class FamilyMembershipStrategy implements MembershipStrategy { ... }
-```
-
-**Benefits**:
-- Easy to add new membership types
-- Flexible runtime strategy changes
-- Each membership encapsulates its own logic
-- No need for if-else statements
-
-**Example Usage**:
-```java
-Member member = new Member("M001", "John", new BasicMembershipStrategy());
-// Later: upgrade to Premium
-member.setMembershipStrategy(new PremiumMembershipStrategy());
-```
+**คลาสย่อย**:
+- `PhysicalBook`: หนังสือกระดาษ (มีตำแหน่งชั้น, น้ำหนัก)
+- `EBook`: หนังสืออิเล็กทรอนิกส์ (มี URL ดาวน์โหลด, ขนาดไฟล์)
 
 ---
 
-## 3. OOP Principles Implementation
+### 2.3 Member
+**หน้าที่**: เก็บข้อมูลสมาชิกห้องสมุด
 
-### 3.1 Inheritance
+**คุณสมบัติ**:
+- `memberId`: รหัสสมาชิก
+- `name`: ชื่อสมาชิก
+- `membershipType`: ประเภทสมาชิก (Basic, Student, Premium, Family)
+- `borrowedItems`: รายการหนังสือที่ยืมอยู่
+- `borrowStrategy`: กลยุทธ์การยืม (Strategy Pattern)
 
-**Abstract Base Class**: `LibraryItem`
-```java
-public abstract class LibraryItem {
-    protected String title;
-    protected String author;
-    protected String isbn;
-    
-    public abstract double getPrice();
-    public abstract void displayDetails();
-}
-```
-
-**Concrete Classes**:
-- `PhysicalBook extends LibraryItem`
-- `EBook extends LibraryItem`
+**เมธอดสำคัญ**:
+- `borrowItem()`: ยืมหนังสือ
+- `returnItem()`: คืนหนังสือ
+- `canBorrow()`: ตรวจสอบว่ายืมได้หรือไม่
+- `getBorrowLimit()`: จำนวนเล่มที่ยืมได้
 
 ---
 
-### 3.2 Polymorphism
+### 2.4 BorrowStrategy (Strategy Pattern)
+**หน้าที่**: กำหนดกลยุทธ์การยืมตามประเภทสมาชิก
 
-**Method Overriding**:
-```java
-// Parent method called with different implementations
-LibraryItem[] items = {new PhysicalBook(...), new EBook(...)};
-for (LibraryItem item : items) {
-    item.displayDetails(); // Calls appropriate implementation
-}
-```
+**ประเภทกลยุทธ์**:
 
----
-
-### 3.3 Encapsulation
-
-```java
-public class Member {
-    private String memberId;      // Private field
-    private List<LibraryItem> borrowedItems;
-    
-    // Public getter
-    public String getMemberId() { return memberId; }
-    
-    // Public method to manage borrowed items
-    public void borrowItem(LibraryItem item) { ... }
-}
-```
+| กลยุทธ์ | จำนวนที่ยืมได้ | ระยะเวลา | ส่วนลดค่าปรับ |
+|---------|----------------|----------|---------------|
+| **BasicBorrowStrategy** | 1 เล่ม | 14 วัน | 0% (10฿/วัน) |
+| **StudentBorrowStrategy** | 5 เล่ม | 21 วัน | 20% (8฿/วัน) |
+| **PremiumBorrowStrategy** | ไม่จำกัด | 30 วัน | 100% (ฟรี) |
+| **FamilyBorrowStrategy** | 6 เล่ม | 21 วัน | 10% (9฿/วัน) |
 
 ---
 
-### 3.4 Interfaces
+## 3. Design Patterns ที่ใช้
 
-**MembershipStrategy Interface**:
-- Defines contract for membership behavior
-- Implemented by 4 concrete strategy classes
+### 3.1 Singleton Pattern
+- **ใช้ใน**: `LibrarySystem`
+- **เหตุผล**: ต้องการให้มีระบบห้องสมุดเพียงหนึ่งเดียวในแอปพลิเคชัน
+- **ประโยชน์**: จัดการข้อมูลรวมศูนย์ ไม่ซ้ำซ้อน
 
-**Taxable Interface**:
-- Calculates tax on items
-- Implemented by PhysicalBook (7%) and EBook (5%)
+### 3.2 Strategy Pattern
+- **ใช้ใน**: `BorrowStrategy` และคลาสย่อย
+- **เหตุผล**: แต่ละประเภทสมาชิกมีเงื่อนไขการยืมต่างกัน
+- **ประโยชน์**: ง่ายต่อการเพิ่มประเภทสมาชิกใหม่ ไม่ต้องแก้ไขโค้ดเดิม
 
-**DigitalContent Interface**:
-- Manages digital operations
-- Implemented by EBook (streaming/downloading)
+### 3.3 Inheritance (การสืบทอด)
+- **ใช้ใน**: `LibraryItem` → `PhysicalBook`, `EBook`
+- **เหตุผล**: หนังสือกระดาษและ E-Book มีคุณสมบัติพื้นฐานเหมือนกัน
+- **ประโยชน์**: ลดโค้ดซ้ำซ้อน ง่ายต่อการขยายประเภทหนังสือใหม่
+
+### 3.4 Polymorphism (พหุสัณฐาน)
+- **ใช้ใน**: เมธอด `getDetails()` ของ `LibraryItem`
+- **เหตุผล**: แต่ละประเภทหนังสือแสดงรายละเอียดต่างกัน
+- **ประโยชน์**: เรียกใช้เมธอดเดียวกัน แต่ได้ผลลัพธ์ตามประเภทจริง
+
+### 3.5 Interface (อินเทอร์เฟซ)
+- **ใช้ใน**: `BorrowStrategy`
+- **เหตุผล**: กำหนดข้อตกลงการทำงานของกลยุทธ์การยืม
+- **ประโยชน์**: คลาสต่างๆ สามารถใช้กลยุทธ์ได้หลากหลาย
 
 ---
 
-## 4. Data Flow
-
-### 4.1 Borrowing Process
+## 4. โครงสร้างไฟล์
 
 ```
-User Input (Member ID, Item Title)
-        ↓
-LibraryManagementApp.handleBorrowing()
-        ↓
-Find Member → Find Item
-        ↓
-Validation Checks:
-  • Is item available?
-  • Can member borrow?
-  • Not exceeding limit?
-        ↓
-YES ─→ LibraryItem.checkOut(member)
-         • Mark as unavailable
-         • Set borrower
-         • Calculate due date
-         • Add to member's list
-         
-NO  ─→ Display error
-```
-
-### 4.2 Report Generation
-
-```
-User selects Report Type
-        ↓
-LibraryManagementApp.viewReports()
-        ↓
-Based on selection:
-  ├─→ reportOverdueItems()
-  │    • Filter items with dueDate < today
-  │    • Calculate days overdue
-  │    • Display list
-  │
-  ├─→ reportMostBorrowedItems()
-  │    • Count borrows per item
-  │    • Sort by count
-  │    • Display ranking
-  │
-  ├─→ reportMemberMostBorrowings()
-  │    • Find member with max borrowed count
-  │    • Display member details
-  │
-  └─→ reportAvailableVsBorrowed()
-       • Count available items
-       • Count borrowed items
-       • Display percentages
+src/com/library/labFinal/
+├── LibraryManagementApp.java       # คลาสหลัก (Main)
+├── LibrarySystem.java              # ระบบห้องสมุด (Singleton)
+├── LibraryItem.java                # คลาสนามธรรมหนังสือ
+├── PhysicalBook.java               # หนังสือกระดาษ
+├── EBook.java                      # หนังสืออิเล็กทรอนิกส์
+├── Member.java                     # สมาชิก
+├── BorrowStrategy.java             # อินเทอร์เฟซกลยุทธ์การยืม
+├── BasicBorrowStrategy.java        # กลยุทธ์พื้นฐาน
+├── StudentBorrowStrategy.java      # กลยุทธ์นักเรียน
+├── PremiumBorrowStrategy.java      # กลยุทธ์พรีเมียม
+└── FamilyBorrowStrategy.java       # กลยุทธ์ครอบครัว
 ```
 
 ---
 
-## 5. Key Classes & Responsibilities
+## 5. การทำงานหลัก
 
-| Class | Responsibility |
-|-------|-----------------|
-| **LibraryManagementApp** | Main entry point, menu system, user interaction |
-| **LibrarySystem** | Core system management, data storage, singleton instance |
-| **Member** | Member data, borrowed items, membership strategy |
-| **LibraryItem** | Base class for items, checkout/return logic |
-| **PhysicalBook** | Physical book properties, tax calculation |
-| **EBook** | Digital content properties, streaming/download |
-| **MembershipStrategy** | Interface for membership behavior |
-| ***MembershipStrategy** | Concrete implementations for each membership type |
-
----
-
-## 6. Use Cases & Flows
-
-### Use Case 1: Register New Member
+### 5.1 การยืมหนังสือ
 ```
-Actor: Librarian
-Steps:
-1. Open system
-2. Select "Manage Members" → "Register New Member"
-3. Enter Member ID, Name, Select Membership Type
-4. System validates (ID uniqueness, name non-empty)
-5. Member added to system
-6. Display confirmation with member details
+1. ตรวจสอบว่าสมาชิกมีอยู่ในระบบ
+2. ตรวจสอบว่าหนังสือว่างอยู่
+3. ตรวจสอบจำนวนเล่มที่ยืมอยู่ไม่เกินจำกัด (Strategy Pattern)
+4. กำหนดวันครบกำหนดคืน (ตาม Strategy)
+5. อัพเดทสถานะหนังสือและรายการของสมาชิก
 ```
 
-### Use Case 2: Borrow Item
+### 5.2 การคืนหนังสือ
 ```
-Actor: Member
-Preconditions:
-  - Member exists in system
-  - Item exists and is available
-  - Member has not reached borrow limit
-Steps:
-1. Select "Borrow Items"
-2. Enter Member ID and Item Title
-3. System validates all conditions
-4. Item marked as borrowed
-5. Due date calculated (based on membership)
-6. Item added to member's list
-7. Confirmation displayed
+1. ตรวจสอบว่าสมาชิกยืมหนังสือนี้อยู่จริง
+2. คำนวณค่าปรับ (ถ้าเกินกำหนด)
+3. นำส่วนลดมาคำนวณ (ตาม Strategy)
+4. อัพเดทสถานะหนังสือและรายการของสมาชิก
+5. แสดงค่าปรับ (ถ้ามี)
 ```
 
-### Use Case 3: Return Item
+### 5.3 การบันทึกข้อมูล
 ```
-Actor: Member
-Preconditions:
-  - Member has borrowed items
-Steps:
-1. Select "Return Items"
-2. Enter Member ID
-3. View list of borrowed items
-4. Select item to return
-5. Item marked as available
-6. Late fees calculated if applicable
-7. Confirmation with fee details
-```
-
-### Use Case 4: View Reports
-```
-Actor: Librarian
-Options:
-1. Overdue Items
-2. Most Borrowed Items
-3. Member with Most Borrowings
-4. Available vs Borrowed Items
-
-System retrieves data and formats for display
-```
-
-### Use Case 5: View Statistics
-```
-Actor: Any User
-Display:
-- Total items in library
-- Available items count
-- Borrowed items count
-- Total members count
-- Percentages
+1. บันทึกข้อมูลสมาชิกและหนังสือลงไฟล์ CSV
+2. แยกข้อมูลด้วย comma (,)
+3. บันทึกทุกครั้งที่ออกจากระบบ (Exit & Save)
 ```
 
 ---
 
-## 7. Input Validation
+## 6. ฟีเจอร์หลัก
 
-| Input | Validation |
-|-------|-----------|
-| Member ID | Must be unique, non-empty |
-| Member Name | Must be non-empty |
-| Item Title | Must exist in system |
-| Price | Must be positive number |
-| File Size | Must be positive number |
-| Membership Type | Must be 1-4 (valid option) |
+### 6.1 การจัดการสมาชิก
+✅ ลงทะเบียนสมาชิกใหม่  
+✅ ดูข้อมูลสมาชิกทั้งหมด  
+✅ ค้นหาสมาชิกจาก ID  
+✅ ดูประวัติการยืม  
+✅ เปลี่ยนประเภทสมาชิก
 
----
+### 6.2 การจัดการหนังสือ
+✅ เพิ่มหนังสือกระดาษ  
+✅ เพิ่มหนังสืออิเล็กทรอนิกส์  
+✅ ดูรายการหนังสือทั้งหมด  
+✅ ค้นหาหนังสือจากชื่อ  
+✅ ลบหนังสือที่ว่าง
 
-## 8. File Storage Format (CSV)
+### 6.3 การยืม-คืน
+✅ ยืมหนังสือ (ตรวจสอบเงื่อนไขอัตโนมัติ)  
+✅ คืนหนังสือ (คำนวณค่าปรับอัตโนมัติ)  
+✅ ดูสถานะหนังสือที่ยืมอยู่
 
-```
-=== LIBRARY DATA BACKUP ===
-Type,Data
-
-=== MEMBERS ===
-MEMBER,M001,Somsak,Basic Member
-MEMBER,M002,Suda,Student Member
-
-=== ITEMS ===
-BOOK,Java Programming,John Smith,978-0134685991,450.00,A1-04
-EBOOK,Effective Java,Joshua Bloch,978-0134685991,url,5.20
-```
-
----
-
-## 9. Error Handling Strategy
-
-| Scenario | Handling |
-|----------|----------|
-| Member ID already exists | Display error, prompt new ID |
-| Item not available | Display "Item already borrowed" |
-| Borrow limit exceeded | Display current count vs limit |
-| Invalid input format | Catch NumberFormatException |
-| File not found (CSV) | Gracefully skip loading |
-| File write error | Display warning message |
+### 6.4 รายงานและสถิติ
+✅ รายงานหนังสือเกินกำหนด  
+✅ รายงานหนังสือยอดนิยม  
+✅ สถิติการใช้งานระบบ  
+✅ สถานะคลังหนังสือ
 
 ---
 
-## 10. Testing Checklist
+## 7. หลักการ OOP ที่สาธิต
 
-- ✅ Singleton returns same instance
-- ✅ Members can register with all 4 types
-- ✅ Items can be borrowed and returned
-- ✅ Borrow limits enforced
-- ✅ Late fees calculated correctly
-- ✅ Strategy changes work at runtime
-- ✅ Reports generate without errors
-- ✅ File I/O operations function
-- ✅ Input validation catches errors
-- ✅ All menus responsive to user input
+### 7.1 Encapsulation (การห่อหุ้ม)
+- ซ่อนข้อมูลภายในคลาส
+- เข้าถึงข้อมูลผ่าน getter/setter เท่านั้น
+- ตัวอย่าง: `private` attributes ใน `Member`, `LibraryItem`
 
----
+### 7.2 Inheritance (การสืบทอด)
+- `PhysicalBook` และ `EBook` สืบทอดจาก `LibraryItem`
+- ลดโค้ดซ้ำซ้อน นำคุณสมบัติร่วมมาใช้ใหม่
 
-## 11. Strengths of Design
+### 7.3 Polymorphism (พหุสัณฐาน)
+- Override เมธอด `getDetails()` ใน `PhysicalBook` และ `EBook`
+- แสดงผลต่างกันตามประเภทจริงของวัตถุ
 
-1. **Flexibility**: New membership types can be added without modifying existing code
-2. **Maintainability**: Clear separation of concerns
-3. **Scalability**: Easy to extend with new features
-4. **Robustness**: Comprehensive error handling
-5. **Reusability**: Strategy pattern allows runtime behavior changes
-6. **Testability**: Each component has clear responsibilities
+### 7.4 Abstraction (นามธรรม)
+- `LibraryItem` เป็น abstract class
+- `BorrowStrategy` เป็น interface
+- กำหนดโครงสร้างโดยไม่ระบุรายละเอียด
 
 ---
 
-## 12. Future Enhancements
+## 8. การขยายระบบในอนาคต
 
-1. **Database Integration**: Replace CSV with SQLite/MySQL
-2. **GUI Interface**: JavaFX or Swing for better UX
-3. **Reservation System**: Allow members to reserve items
-4. **Email Notifications**: Overdue reminders
-5. **Payment System**: Online fine payment
-6. **Reviews & Ratings**: Member feedback system
-7. **Mobile App**: Android/iOS companion app
-8. **Analytics Dashboard**: Charts and graphs
+### ฟีเจอร์ที่สามารถเพิ่มได้:
+-  เพิ่มประเภทสื่อ (DVD, นิตยสาร, หนังสือพิมพ์)
+-  ระบบแจ้งเตือนครบกำหนดคืน
+-  ระบบชำระค่าปรับออนไลน์
+-  รายงานสถิติขั้นสูง (กราฟ, แดชบอร์ด)
+-  ระบบ Login สำหรับบรรณารักษ์และสมาชิก
+-  ค้นหาขั้นสูง (หมวดหมู่, ISBN, ปีพิมพ์)
+-  Mobile Application
+-  Web Interface
 
 ---
 
-**Document Version**: 1.0
-**Last Updated**: March 2026
+## 9. เทคโนโลยีที่ใช้
 
+| เทคโนโลยี | เวอร์ชัน | จุดประสงค์ |
+|-----------|----------|-----------|
+| **Java** | 8+ | ภาษาหลักในการพัฒนา |
+| **CSV** | - | จัดเก็บข้อมูล (File I/O) |
+| **Console** | - | User Interface |
+
+---
+
+## 10. สรุป
+
+ระบบจัดการห้องสมุดนี้ออกแบบมาเพื่อ:
+1. ✅ สาธิตหลักการ OOP ครบถ้วน
+2. ✅ ใช้ Design Patterns ที่เหมาะสม
+3. ✅ ง่ายต่อการขยายและบำรุงรักษา
+4. ✅ จัดการข้อมูลได้อย่างมีประสิทธิภาพ
+5. ✅ เหมาะสำหรับการเรียนรู้และพัฒนาต่อยอด
+
+---
